@@ -35,17 +35,22 @@ screen = pygame.display.set_mode(size)
 bg = pygame.image.load("background.bmp").convert()
 pygame.display.set_caption("Flappy Bird")
 
-# Ball characteristics
+# flappy characteristics
 x = 150
-y = 150
+y = 50
 x_vel = 0
 y_vel = 0
 
 gameOver = False
 clock = pygame.time.Clock()
 
-flappy = pygame.image.load("flappy.bmp").convert()
-
+def flappyCreate(xStart,yStart):
+    flappy = pygame.image.load("flappy.png").convert()
+    flappy = pygame.transform.scale(flappy, (100, 75))
+    flappy = flappy.convert_alpha()
+    flappy.set_colorkey(black)
+    screen.blit(flappy, (xStart, yStart))
+    
 def gameover():
     font = pygame.font.SysFont(None, 25)
     text = font.render("Game Over", True, black)
@@ -64,7 +69,7 @@ while not gameOver:
             if event.key == pygame.K_UP:
                 y_vel = 5
     screen.blit(bg, (0,0)) 
-    screen.blit(flappy, (50,50))
+    flappyCreate(x, y);
     y += y_vel
 
     if y > ground: 
