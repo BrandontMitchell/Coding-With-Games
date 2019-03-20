@@ -29,22 +29,22 @@ black = (0,0,0)
 white = (255,255,255)
 
 # Size and positioning
-size = width, height = 700, 700
+size = width, height = 480, 263
 ground = 480
 screen = pygame.display.set_mode(size)
+bg = pygame.image.load("background.bmp").convert()
 pygame.display.set_caption("Flappy Bird")
 
 # Ball characteristics
-x = 350
-y = 250
+x = 150
+y = 150
 x_vel = 0
 y_vel = 0
 
 gameOver = False
 clock = pygame.time.Clock()
 
-def ball(x,y):
-    pygame.draw.circle(screen, black, (x,y), 20)
+flappy = pygame.image.load("flappy.bmp").convert()
 
 def gameover():
     font = pygame.font.SysFont(None, 25)
@@ -63,8 +63,8 @@ while not gameOver:
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
                 y_vel = 5
-    screen.fill(white) 
-    ball(x,y)
+    screen.blit(bg, (0,0)) 
+    screen.blit(flappy, (50,50))
     y += y_vel
 
     if y > ground: 
