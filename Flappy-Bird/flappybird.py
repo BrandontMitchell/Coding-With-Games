@@ -2,6 +2,7 @@ import pygame
 import random
 import time
 import math
+import sys
 
 """
 
@@ -22,31 +23,48 @@ import math
 
 
 """
+# game settings 
 pygame.init()
+FPS = 120
+gameOver = False
+clock = pygame.time.Clock()
 
 # Object colors 
 black = (0,0,0)
 white = (255,255,255)
 
 # Size and positioning
-size = width, height = 480, 263
-ground = 480
-screen = pygame.display.set_mode(size)
-bg = pygame.image.load("background.bmp").convert()
+WIDTH = 480
+HEIGHT = 263
+ground = 150
+textLoc = [200, 80]
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+bg = pygame.image.load("background.png").convert()
 pygame.display.set_caption("Flappy Bird")
 
 # flappy characteristics
 x = 150
 y = 50
+bgX = 0
 x_vel = 0
 y_vel = 0
 
-gameOver = False
-clock = pygame.time.Clock()
+def events():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                y_vel = -10
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                y_vel = 5
+        
+        
 
 def flappyCreate(xStart,yStart):
     flappy = pygame.image.load("flappy.png").convert()
-    flappy = pygame.transform.scale(flappy, (100, 75))
+    flappy = pygame.transform.scale(flappy, (50, 35))
     flappy = flappy.convert_alpha()
     flappy.set_colorkey(black)
     screen.blit(flappy, (xStart, yStart))
@@ -54,29 +72,31 @@ def flappyCreate(xStart,yStart):
 def gameover():
     font = pygame.font.SysFont(None, 25)
     text = font.render("Game Over", True, black)
-    screen.blit(text, [150, 250])
+    screen.blit(text, textLoc)
+
+
 
 
 while not gameOver:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            gameOver = True
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                y_vel = -10
-        
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP:
-                y_vel = 5
-    screen.blit(bg, (0,0)) 
-    flappyCreate(x, y);
-    y += y_vel
+    
 
+    rel_x = bgX % bg.get_rect().width
+    screen.blit(bg, (rel_x - bg.get_rect().width, 0))
+    if rel_x < WIDTH:
+        screen.blit(bg, (rel_x, 0))
+    bgX -= 1
+    
+
+    events()
+    flappyCreate(x, y)
+    y += y_vel
     if y > ground: 
         gameover()
         y_vel=0
 
-    pygame.display.flip()
-    clock.tick(60)
+    pygame.display.update()
+    clock.tick(FPS)
+    
+    
 
 pygame.quit()
