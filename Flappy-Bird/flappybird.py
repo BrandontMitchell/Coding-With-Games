@@ -48,31 +48,25 @@ y = 50
 bgX = 0
 x_vel = 0
 y_vel = 0
+        
+def createPipe(xStart, yStart):
+    pipe = pygame.image.load("pipe.bmp").convert_alpha()
+    pipe = pygame.transform.scale(pipe, (50, 35))
+    pipe.set_colorkey((255, 255, 255))
+    screen.blit(pipe, (xStart, yStart))
 
-def events():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                y_vel = -10
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_UP:
-                y_vel = 5
-        
-        
 
 def flappyCreate(xStart,yStart):
-    flappy = pygame.image.load("flappy.png").convert()
+    flappy = pygame.image.load("flappy.bmp").convert_alpha()
     flappy = pygame.transform.scale(flappy, (50, 35))
-    flappy = flappy.convert_alpha()
-    flappy.set_colorkey(black)
+    flappy.set_colorkey((255, 255, 255))
     screen.blit(flappy, (xStart, yStart))
     
 def gameover():
     font = pygame.font.SysFont(None, 25)
     text = font.render("Game Over", True, black)
     screen.blit(text, textLoc)
+    gameOver = True
 
 #test
 
@@ -80,21 +74,38 @@ def gameover():
 while not gameOver:
     
 
+    #in game controls
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                y_vel = -8
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                y_vel = 3
+    
+
+    #background image scrolling effect
     rel_x = bgX % bg.get_rect().width
     screen.blit(bg, (rel_x - bg.get_rect().width, 0))
+    # events()
     if rel_x < WIDTH:
         screen.blit(bg, (rel_x, 0))
     bgX -= 1
     
-
-    events()
+    #bird creation and velocity updates
     flappyCreate(x, y)
     y += y_vel
     if y > ground: 
         gameover()
         y_vel=0
 
+    #pipe creation
+    createPipe(150, 0)
+
     pygame.display.update()
+    pygame.display.flip()
     clock.tick(FPS)
     
     
